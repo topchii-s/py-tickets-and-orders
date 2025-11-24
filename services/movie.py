@@ -1,18 +1,17 @@
 from __future__ import annotations
 
 from typing import Optional
-
-from django.db import transaction
+from django.db import models, transaction
+from django.db.models import QuerySet
 
 from db.models import Movie
-from django.db import models
 
 
 def get_movies(
-    genres_ids=None,
-    actors_ids=None,
-    title=None,
-):
+    genres_ids: Optional[list[int]] = None,
+    actors_ids: Optional[list[int]] = None,
+    title: Optional[str] = None,
+) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
 
     if genres_ids:

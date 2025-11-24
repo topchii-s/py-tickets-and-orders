@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import List, Dict, Optional
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -15,7 +15,7 @@ UserModel = get_user_model()
 
 @transaction.atomic
 def create_order(
-    tickets: List[Dict[str, int]],
+    tickets: list[dict[str, int]],
     username: str,
     date: Optional[str] = None,
 ) -> Order:
@@ -23,16 +23,19 @@ def create_order(
 
     if date:
         created_at = dt.datetime.fromisoformat(date)
-        order = Order.objects.create(user=user, created_at=created_at)
+        order = Order.objects.create(
+            user=user,
+            created_at=created_at
+        )
     else:
         order = Order.objects.create(user=user)
 
-    for t in tickets:
+    for ticket_data in tickets:
         Ticket.objects.create(
-            movie_session_id=t["movie_session"],
+            movie_session_id=ticket_data["movie_session"],
             order=order,
-            row=t["row"],
-            seat=t["seat"],
+            row=ticket_data["row"],
+            seat=ticket_data["seat"],
         )
 
     return order
