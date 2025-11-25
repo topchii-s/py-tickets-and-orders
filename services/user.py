@@ -15,23 +15,19 @@ def create_user(
     first_name: Optional[str] = None,
     last_name: Optional[str] = None,
 ) -> UserModel:
-    user = UserModel.objects.create_user(
-        username=username,
-        password=password
-    )
+    user_data: dict[str, object] = {
+        "username": username,
+        "password": password,
+    }
 
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
+    if email is not None:
+        user_data["email"] = email
+    if first_name is not None:
+        user_data["first_name"] = first_name
+    if last_name is not None:
+        user_data["last_name"] = last_name
 
-    # Only save when optional fields were modified
-    if email or first_name or last_name:
-        user.save()
-
-    return user
+    return UserModel.objects.create_user(**user_data)
 
 
 def get_user(user_id: int) -> UserModel:
